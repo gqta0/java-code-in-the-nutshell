@@ -139,3 +139,79 @@
     name.ifPresent(System.out::println);  // không in ra gì vì giá trị null
     ```
 
+
+### Giải thích về Generics trong Java
+
+Generics là một tính năng trong Java cho phép các lớp, interface và phương thức hoạt động với các kiểu dữ liệu tham số hóa. Thay vì làm việc với các kiểu cụ thể, bạn có thể sử dụng các tham số kiểu để viết mã chung hơn và có tính linh hoạt cao hơn.
+
+**Lợi ích của Generics:**
+- **Type Safety**: Giúp phát hiện lỗi kiểu dữ liệu tại thời điểm biên dịch.
+- **Code Reusability**: Tạo ra các lớp và phương thức có thể dùng lại cho nhiều kiểu dữ liệu khác nhau mà không cần viết lại mã.
+- **Avoiding Type Casting**: Loại bỏ việc ép kiểu thủ công, vì kiểu dữ liệu đã được xác định trước tại compile time.
+
+Ví dụ về Generics:
+
+```Java
+// Ví dụ về sử dụng Generics trong lớp
+public class Box<T> {
+    private T value;
+
+    public void set(T value) {
+        this.value = value;
+    }
+
+    public T get() {
+        return value;
+    }
+}
+
+```
+
+### Tại sao lại sử dụng final?
+
+Khi một lớp được đánh dấu là final, không lớp nào khác có thể kế thừa từ lớp đó. Điều này đảm bảo rằng lớp của bạn sẽ không bị thay đổi thông qua kế thừa và hành vi của nó sẽ được bảo toàn
+
+- `Bảo vệ tính toàn vẹn của lớp`: Ngăn chặn việc các lớp con vô tình hoặc cố ý thay đổi hành vi của lớp cha.
+- `Tăng hiệu suất`: Đôi khi, trình biên dịch có thể tối ưu hóa mã của các lớp `final` tốt hơn.
+- `Làm rõ ý định thiết kế`: Cho biết rõ rằng lớp này không được thiết kế để làm lớp cơ sở cho các lớp khác.
+
+### Phân biệt giữa Checked và Unchecked Exceptions.
+
+| **Tiêu chí**                    | **Checked Exceptions**                                  | **Unchecked Exceptions**                                |
+|----------------------------------|---------------------------------------------------------|---------------------------------------------------------|
+| **Kiểm tra tại**                 | Được kiểm tra tại thời điểm biên dịch (compile-time)    | Được kiểm tra tại thời điểm runtime                     |
+| **Lớp cha**                      | Kế thừa từ `java.lang.Exception` (ngoại trừ `RuntimeException`) | Kế thừa từ `java.lang.RuntimeException`                 |
+| **Ví dụ**                        | `IOException`, `SQLException`, `FileNotFoundException`  | `NullPointerException`, `ArrayIndexOutOfBoundsException`, `ArithmeticException` |
+| **Bắt buộc xử lý**               | Phải được xử lý hoặc khai báo trong phương thức với `throws` | Không bắt buộc phải xử lý hoặc khai báo                 |
+| **Mục đích**                     | Dùng cho các lỗi có thể dự đoán và khắc phục được       | Dùng cho các lỗi lập trình, thường là lỗi không thể dự đoán hoặc khó khắc phục |
+| **Xử lý**                        | Phải sử dụng `try-catch` hoặc khai báo `throws`         | Không yêu cầu bắt buộc sử dụng `try-catch`               |
+| **Thời điểm phát sinh**          | Thường xảy ra do các điều kiện ngoại cảnh như tệp tin không tồn tại hoặc lỗi mạng | Thường xảy ra do các lỗi lập trình, chẳng hạn như chia cho 0 hoặc truy cập mảng ngoài giới hạn |
+
+### Khi nào thì sử dụng extends và super trong Generics?
+
+| **Tiêu chí**          | **`extends`**                                              | **`super`**                                               |
+|-----------------------|-------------------------------------------------------------|------------------------------------------------------------|
+| **Sử dụng khi**       | Để khai báo một kiểu giới hạn trên hoặc dưới một lớp hoặc interface  | Để khai báo một kiểu có thể là lớp cha của một lớp cụ thể |
+| **Ký hiệu**           | `<? extends T>`: Giới hạn kiểu đối tượng là một lớp con của `T` hoặc là chính `T` | `<? super T>`: Giới hạn kiểu đối tượng là một lớp cha của `T` hoặc là chính `T` |
+| **Đọc dữ liệu**       | Có thể đọc dữ liệu từ danh sách nhưng chỉ có thể đọc dữ liệu dưới dạng `T` hoặc `T` (tức là không biết chính xác kiểu dữ liệu) | Có thể đọc dữ liệu dưới dạng `Object` vì không biết chính xác kiểu dữ liệu  |
+| **Ghi dữ liệu**       | Không thể ghi dữ liệu vào danh sách vì không biết chính xác kiểu dữ liệu | Có thể ghi dữ liệu vào danh sách (đặc biệt khi kiểu cụ thể là `T`) |
+| **Ví dụ sử dụng**     | `List<? extends Number>`: Có thể chứa `Integer`, `Double`, v.v. nhưng không thể thêm bất kỳ giá trị nào vào danh sách này | `List<? super Integer>`: Có thể chứa `Integer` và các lớp cha của `Integer`, có thể thêm `Integer` vào danh sách này |
+
+
+### Sự khác biệt giữa `List<Object>` và `List<?>` là gì? 
+
+| **Tiêu chí**                       | **`List<Object>`**                                        | **`List<?>`**                                             |
+|------------------------------------|---------------------------------------------------------|---------------------------------------------------------|
+| **Khai báo**                       | `List<Object>`: Danh sách có thể chứa bất kỳ loại đối tượng nào | `List<?>`: Danh sách có thể chứa bất kỳ loại đối tượng nào, nhưng loại đối tượng cụ thể không được biết |
+| **Thêm phần tử**                  | Có thể thêm bất kỳ loại đối tượng nào                  | Không thể thêm phần tử vào danh sách vì không biết kiểu đối tượng cụ thể |
+| **Truy cập phần tử**              | Có thể truy cập và thao tác với các phần tử như `Object` | Có thể đọc các phần tử, nhưng không thể thực hiện thao tác cụ thể (phải cast về kiểu cụ thể) |
+| **Lấy kiểu đối tượng**            | Có thể lấy kiểu đối tượng cụ thể từ `List<Object>`     | Không thể lấy kiểu đối tượng cụ thể từ `List<?>`     |
+| **Sử dụng với Generics**           | Có thể sử dụng các phương thức generics với `List<Object>` | Thường dùng trong trường hợp generic wildcard (`List<?>`) để viết mã linh hoạt |
+| **Khả năng mở rộng**               | Có thể mở rộng thành `List<String>`, `List<Integer>`, v.v. | Không thể mở rộng thành các kiểu cụ thể vì kiểu đối tượng không được biết |
+| **Ví dụ sử dụng**                  | `List<Object> list = new ArrayList<>();`                | `List<?> list = new ArrayList<String>();`              |
+
+
+
+
+
+
